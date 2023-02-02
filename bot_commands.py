@@ -1,9 +1,10 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler
 import datetime
 import game_XO
 import read_data_from_file
 import datetime
+import game
 
 
 async def hello_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -46,3 +47,12 @@ async def show_aphorism_command(update: Update, context: ContextTypes.DEFAULT_TY
     
 async def show_abstract_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(read_data_from_file.read_random_data_from_file('abstract_py.txt'))
+
+async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    mess = update.message.text
+    item = mess.split()
+    item[0] = str(update.message.chat_id)
+    await update.message.reply_text(item[0])
+    game.game_start(item[0])
+    await update.message.reply_text(game.game_info(item[0]))
+    await update.message.reply_text(game.show_progress())

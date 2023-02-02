@@ -12,8 +12,7 @@ app.add_handler(CommandHandler("time", time_command))
 app.add_handler(CommandHandler("ny", days_to_new_year_command))
 app.add_handler(CommandHandler("aphorism", show_aphorism_command))
 app.add_handler(CommandHandler("abstract", show_abstract_command))
-# app.add_handler(CommandHandler("play", play_command))
-
+app.add_handler(CommandHandler("game", game_start))
 
 print(emoji.emojize(f'Привет :thumbs_up:'))
 
