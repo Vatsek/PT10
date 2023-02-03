@@ -5,7 +5,7 @@ import game_XO
 import read_data_from_file
 import datetime
 import game
-
+import random
 
 async def hello_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(f'Привет {update.effective_user.first_name} !')
@@ -48,11 +48,22 @@ async def show_aphorism_command(update: Update, context: ContextTypes.DEFAULT_TY
 async def show_abstract_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(read_data_from_file.read_random_data_from_file('abstract_py.txt'))
 
-async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    mess = update.message.text
-    item = mess.split()
-    item[0] = str(update.message.chat_id)
-    await update.message.reply_text(item[0])
-    game.game_start(item[0])
-    await update.message.reply_text(game.game_info(item[0]))
-    await update.message.reply_text(game.show_progress())
+
+
+
+async def game1(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    game_status = True
+    while game_status == True:
+        game.start_game()
+        await update.message.reply_text(f'На столе лежит 2021 конфета. Два игрока делают ход друг после друга. Первый ход определяется жеребьёвкой.\n'
+                                        'За один ход можно забрать не более чем 28 конфет. Все конфеты оппонента достаются сделавшему последний ход.')
+        # message = f'Игра началась.\nНа столе 8 спичек\n'
+        await update.message.reply_text(f'Игра началась.\nНа столе 2021 конфета.\n')
+        if random.randint(0, 2) == 1:
+            message = 'Я хожу первый\n'
+            await update.message.reply_text(message)
+        else:
+            message = 'Ваш ход'
+            await update.message.reply_text(message)
+
+
