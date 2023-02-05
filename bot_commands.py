@@ -8,7 +8,6 @@ import game
 import random
 from random import randrange
 
-
 async def hello_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(f'Привет {update.effective_user.first_name} !')
 
@@ -46,10 +45,11 @@ async def show_abstract_command(update: Update, context: ContextTypes.DEFAULT_TY
     await update.message.reply_text(read_data_from_file.read_random_data_from_file('abstract_py.txt'))
 
 
-game_status = True
+
 
 async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # game_status = True
+    global game_status
+    game_status = True
     if game_status == True:
         await update.message.reply_text(f'На столе лежит 200 конфет. Два игрока делают ход друг после друга. Первый ход определяется жеребьёвкой.\n'
                                         'За один ход можно забрать не более чем 28 конфет. Все конфеты оппонента достаются сделавшему последний ход.')
@@ -63,45 +63,49 @@ async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             
 
 async def game_stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    global game_status
+    game_status = False
     game.stop_game()
     await update.message.reply_text(f'Игра закончена')
 
 async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message.text[0] != '/':
-            # ход игрока
-        try:
-            quantity = int(update.message.text)
-        except:
-            await update.message.reply_text('Я не понял ваш ответ. Напишите цифрой, сколько вы берете конфет.')
-            return
-        if not 0 < quantity < 29:
-            await update.message.reply_text('можно брать только от 1 до 28 конфет')
-            return
-        if game.check_count(quantity):
-            await update.message.reply_text(f'Жадина) Нельзя взять больше конфет чем осталось.')
-            return
-        candies = game.move_player(quantity)
-        if game.finish_game():
-            await update.message.reply_text('Поздравляю вас, вы выиграли')
-            game.stop_game()
-            return
-        message = (f'На столе {candies} конфет(а)(ы).')
-        await update.message.reply_text(message)
-        # ход cpu
-        if candies < 29:
-                quantity = candies
-        else:
-            quantity = randrange(1,29)
-        candies = game.move_cpu(quantity)
-        message = f'Я взял {quantity} конфет(ы)\n'
-        await update.message.reply_text(message)
-        message = f'На столе {candies} конфет(а)(ы).'
-        await update.message.reply_text(message)
-        if game.finish_game():
-            message = f'Я выиграл) Не расстраивайся) в следующий раз точно повезет)'
+    global game_status
+    if game_status == True:    
+        if update.message.text[0] != '/':
+                # ход игрока
+            try:
+                quantity = int(update.message.text)
+            except:
+                await update.message.reply_text('Я не понял ваш ответ. Напишите цифрой, сколько вы берете конфет.')
+                return
+            if not 0 < quantity < 29:
+                await update.message.reply_text('можно брать только от 1 до 28 конфет')
+                return
+            if game.check_count(quantity):
+                await update.message.reply_text(f'Жадина) Нельзя взять больше конфет чем осталось.')
+                return
+            candies = game.move_player(quantity)
+            if game.finish_game():
+                await update.message.reply_text('Поздравляю вас, вы выиграли')
+                game.stop_game()
+                return
+            message = (f'На столе {candies} конфет(а)(ы).')
             await update.message.reply_text(message)
-            game.stop_game()
+            # ход cpu
+            if candies < 29:
+                    quantity = candies
+            else:
+                quantity = randrange(1,29)
+            candies = game.move_cpu(quantity)
+            message = f'Я взял {quantity} конфет(ы)\n'
+            await update.message.reply_text(message)
+            message = f'На столе {candies} конфет(а)(ы).'
+            await update.message.reply_text(message)
+            if game.finish_game():
+                message = f'Я выиграл) Не расстраивайся) в следующий раз точно повезет)'
+                await update.message.reply_text(message)
+                game.stop_game()
+                return
+            message = 'Ваш ход'
+            await update.message.reply_text(message)
             return
-        message = 'Ваш ход'
-        await update.message.reply_text(message)
-        return

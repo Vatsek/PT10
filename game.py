@@ -1,4 +1,5 @@
 candies = 200
+game_status = True
 
 def start_game():
     game_status = True
