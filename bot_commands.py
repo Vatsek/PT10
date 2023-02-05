@@ -54,13 +54,12 @@ async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         await update.message.reply_text(f'На столе лежит 200 конфет. Два игрока делают ход друг после друга. Первый ход определяется жеребьёвкой.\n'
                                         'За один ход можно забрать не более чем 28 конфет. Все конфеты оппонента достаются сделавшему последний ход.')
         await update.message.reply_text(f'Игра началась.')
-        if random.randint(0, 2) == 1:
-            message = 'Я хожу первый\n'
-            await update.message.reply_text(message)
-        else:
-            message = 'Ваш ход'
-            await update.message.reply_text(message)
-            
+    if random.randint(0, 2) == 1:
+        message = 'Я хожу первый\n'
+        await update.message.reply_text(message)
+    else:
+        message = 'Ваш ход'
+        await update.message.reply_text(message)            
 
 async def game_stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     global game_status
@@ -87,6 +86,7 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             candies = game.move_player(quantity)
             if game.finish_game():
                 await update.message.reply_text('Поздравляю вас, вы выиграли')
+                game_status = False
                 game.stop_game()
                 return
             message = (f'На столе {candies} конфет(а)(ы).')
@@ -104,6 +104,7 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             if game.finish_game():
                 message = f'Я выиграл) Не расстраивайся) в следующий раз точно повезет)'
                 await update.message.reply_text(message)
+                game_status = False
                 game.stop_game()
                 return
             message = 'Ваш ход'
