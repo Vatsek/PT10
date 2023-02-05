@@ -57,6 +57,12 @@ async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     if random.randint(0, 2) == 1:
         message = 'Я хожу первый\n'
         await update.message.reply_text(message)
+        quantity = randrange(1,29)
+        candies = game.move_cpu(quantity)
+        message = f'Я взял {quantity} конфет(ы)\n'
+        await update.message.reply_text(message)
+        message = f'На столе {candies} конфет(а)(ы).'
+        await update.message.reply_text(message)
     else:
         message = 'Ваш ход'
         await update.message.reply_text(message)            
