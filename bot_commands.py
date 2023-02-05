@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler
 import datetime
-import game_XO
 import read_data_from_file
 import datetime
 import game

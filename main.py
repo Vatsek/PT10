@@ -6,7 +6,7 @@ import time
 import game
 
 
-app = ApplicationBuilder().token("5918976065:AAGbKQWe8gC0q-yc9YPqqmLiyN4Mk15prYc").build()
+app = ApplicationBuilder().token("token").build()
 
 app.add_handler(CommandHandler("hello", hello_command))
 app.add_handler(CommandHandler("help", help_command))
