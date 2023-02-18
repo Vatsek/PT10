@@ -60,7 +60,7 @@ async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         message = 'Я хожу первый\n'
         await update.message.reply_text(message)
         quantity = randrange(1,29)
-        candies = game.move_cpu(quantity)
+        candies = game.move_cpu(update, context, quantity)
         message = f'Я взял {quantity} конфет(ы)\n'
         await update.message.reply_text(message)
         message = f'На столе {candies} конфет(а)(ы).'
@@ -73,7 +73,7 @@ async def game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 async def game_stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     global game_status
     game_status = False
-    game.stop_game()
+    game.stop_game(update)
     await update.message.reply_text(f'Игра закончена')
 
 async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -89,23 +89,24 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             if not 0 < quantity < 29:
                 await update.message.reply_text('можно брать только от 1 до 28 конфет')
                 return
-            if game.check_count(quantity):
-                await update.message.reply_text(f'Жадина) Нельзя взять больше конфет чем осталось.')
+            if game.check_count(update, quantity):
+                await update.message.reply_text(f'Жадина) Нельзя взять больше конфет чем осталось).')
                 return
-            candies = game.move_player(quantity)
+            candies = game.move_player(update, context, quantity)
             if game.finish_game():
-                await update.message.reply_text('Поздравляю вас, вы выиграли')
+                await update.message.reply_text('Поздравляю Вас! Вы выиграли!)')
                 game_status = False
-                game.stop_game()
+                game.stop_game(update)
                 return
             message = (f'На столе {candies} конфет(а)(ы).')
             await update.message.reply_text(message)
             # ход cpu
+                #тут должен быть метод, который показывает остаток конфет в игре определенного игрока
             if candies < 29:
                     quantity = candies
             else:
                 quantity = randrange(1,29)
-            candies = game.move_cpu(quantity)
+            candies = game.move_cpu(update, context, quantity)
             message = f'Я взял {quantity} конфет(ы)\n'
             await update.message.reply_text(message)
             message = f'На столе {candies} конфет(а)(ы).'
@@ -114,7 +115,7 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 message = f'Я выиграл) Не расстраивайся) в следующий раз точно повезет)'
                 await update.message.reply_text(message)
                 game_status = False
-                game.stop_game()
+                game.stop_game(update)
                 return
             message = 'Ваш ход'
             await update.message.reply_text(message)
